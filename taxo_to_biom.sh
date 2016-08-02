@@ -77,9 +77,9 @@ SCRIPTDIR=/pasteur/projets/specific/PGP_Work/Scripts
 
 # TAXO TO OTU TABLE
 echo "... Step 1 : Converting taxo files to OTU table ..."
-qrsh -q cibu -cwd -now n -V ${SCRIPTDIR}/taxo_to_otutable.py -i ${OTUTABLEFILE} -o ${OUTPUT_NAME}.tsv
+qrsh -cwd -now n -V ${SCRIPTDIR}/taxo_to_otutable.py -i ${OTUTABLEFILE} -o ${OUTPUT_NAME}.tsv
 echo
 # OTU TABLE TO BIOM
 echo "... Step 2 : Converting OTU table to BIOM file ..."
-qrsh -q cibu -cwd -now n -V ${SCRIPTDIR}/otutable_to_biom.sh -i ${OUTPUT_NAME}.tsv -m ${METADATAFILE} -o ${OUTPUT_NAME}.biom
+qrsh -cwd -now n -V ${SCRIPTDIR}/otutable_to_biom.sh -i ${OUTPUT_NAME}.tsv -m ${METADATAFILE} -o ${OUTPUT_NAME}.biom
 
