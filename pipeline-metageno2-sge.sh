@@ -80,18 +80,18 @@ fi
 
 # BAM 2 FASTQ
 echo "... Step 1 : Bam to Fastq ..." ;
-qrsh -V -q cibu -cwd -now n ${SCRIPTDIR}/bam2fastq-1.1.0/bam2fastq -o ${OUTPUT}.fastq ${OUTPUT}.bam
+qrsh -V -cwd -now n ${SCRIPTDIR}/bam2fastq-1.1.0/bam2fastq -o ${OUTPUT}.fastq ${OUTPUT}.bam
 echo
  
 # FASTQCLEANER
 echo "... Step 2.1 : Fastq Cleaner ..." ;
 OUTPUT_CLEAN=${OUTPUT}.q${FQQ}p${FQP}l${FQL}.CFQD
-qrsh -V -q cibu -cwd -now n ${SCRIPTDIR}/fqCleaner.sh -f ${OUTPUT}.fastq -q ${FQQ} -l ${FQL} -p ${FQP} -x ${OUTPUT_CLEAN}.fq
+qrsh -V -cwd -now n ${SCRIPTDIR}/fqCleaner.sh -f ${OUTPUT}.fastq -q ${FQQ} -l ${FQL} -p ${FQP} -x ${OUTPUT_CLEAN}.fq
 echo
  
 # FASTQ 2 FASTA
 echo "... Step 2.2 : Fastq to Fasta ..." ;
-qrsh -V -q cibu -cwd -now n perl ${SCRIPTDIR}/fastq2fasta.pl ${OUTPUT_CLEAN}.fq ${OUTPUT_CLEAN}.fasta 
+qrsh -V -cwd -now n perl ${SCRIPTDIR}/fastq2fasta.pl ${OUTPUT_CLEAN}.fq ${OUTPUT_CLEAN}.fasta 
 echo
  
 # DECONSEQ
@@ -104,19 +104,19 @@ echo
 # KAIJU
 echo "... Step 4.1 : Kaiju Classification ..." ;
 OUTPUT_KAIJU=${OUTPUT_DECONT}.greedym1_full.kaiju
-qrsh -q cibu -cwd -now n -pe thread 10 -l mem_total=58G -V ${KAIJUDIR}/kaiju -i ${OUTPUT_DECONT}.fasta -o ${OUTPUT_KAIJU} -t ${KAIJUDB}/nodes.dmp -f ${KAIJUDB}/kaiju_db_nr_euk.fmi -z 10 -a greedy -m 1 -v
+qrsh -cwd -now n -pe thread 10 -l mem_total=58G -V ${KAIJUDIR}/kaiju -i ${OUTPUT_DECONT}.fasta -o ${OUTPUT_KAIJU} -t ${KAIJUDB}/nodes.dmp -f ${KAIJUDB}/kaiju_db_nr_euk.fmi -z 10 -a greedy -m 1 -v
 echo
  
 echo "... Step 4.2 : Get labels ..." ;
 OUTPUT_LABELS=${OUTPUT_KAIJU}.full_labels
-qrsh -q cibu -cwd -now n -V ${KAIJUDIR}/addTaxonNames -i ${OUTPUT_KAIJU} -o ${OUTPUT_LABELS} -t ${KAIJUDB}/nodes.dmp -n ${KAIJUDB}/names.dmp -u -p
+qrsh -cwd -now n -V ${KAIJUDIR}/addTaxonNames -i ${OUTPUT_KAIJU} -o ${OUTPUT_LABELS} -t ${KAIJUDB}/nodes.dmp -n ${KAIJUDB}/names.dmp -u -p
 ls *.full_labels
 echo
  
 # GET VIRUS FASTA SEQUENCES AND COUNTING
 echo "... Step 5.1 : Get Virus fasta sequences ..." ;
 OUTPUT_VIRUS=${OUTPUT_LABELS}.virus
-qrsh -q cibu -cwd -V -now n ${SCRIPTDIR}/get_seq_from_kaiju_taxo.sh -f ${OUTPUT_DECONT}.fasta -k ${OUTPUT_LABELS} -o ${OUTPUT_VIRUS}.fasta -t 'Virus'
+qrsh -cwd -V -now n ${SCRIPTDIR}/get_seq_from_kaiju_taxo.sh -f ${OUTPUT_DECONT}.fasta -k ${OUTPUT_LABELS} -o ${OUTPUT_VIRUS}.fasta -t 'Virus'
 echo
  
 echo "... Step 5.2 : Count Virus fasta sequences ..." ;
@@ -153,11 +153,11 @@ if [ $nbseq -gt 1000000 ]
 then 
 	OUTPUT_CONTIG_BLASTN_BEST=${OUTPUT_CONTIG}.blastn.best_score
 	OUTPUT_UNASSEMBLED_BLASTN_BEST=${OUTPUT_UNASSEMBLED}.blastn.best_score
-	qrsh -V -q cibu -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_CONTIG}.blastn -o ${OUTPUT_CONTIG_BLASTN_BEST}
-	qrsh -V -q cibu -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_UNASSEMBLED}.blastn -o ${OUTPUT_UNASSEMBLED_BLASTN_BEST}
+	qrsh -V -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_CONTIG}.blastn -o ${OUTPUT_CONTIG_BLASTN_BEST}
+	qrsh -V -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_UNASSEMBLED}.blastn -o ${OUTPUT_UNASSEMBLED_BLASTN_BEST}
 else
 	OUTPUT_VIRUS_BLASTN_BEST=${OUTPUT_VIRUS}.blastn.best_score
-	qrsh -V -q cibu -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_VIRUS}.blastn -o ${OUTPUT_VIRUS_BLASTN_BEST}
+	qrsh -V -cwd -now n perl ${SCRIPTDIR}/best_score_v4.pl -i ${OUTPUT_VIRUS}.blastn -o ${OUTPUT_VIRUS_BLASTN_BEST}
 fi
 ls *.best_score
 echo
