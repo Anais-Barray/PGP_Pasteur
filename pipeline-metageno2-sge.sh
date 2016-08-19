@@ -104,7 +104,7 @@ echo
 # KAIJU
 echo "... Step 4.1 : Kaiju Classification ..." ;
 OUTPUT_KAIJU=${OUTPUT_DECONT}.greedym1_full.kaiju
-qrsh -cwd -now n -pe thread 10 -l mem_total=58G -V ${KAIJUDIR}/kaiju -i ${OUTPUT_DECONT}.fasta -o ${OUTPUT_KAIJU} -t ${KAIJUDB}/nodes.dmp -f ${KAIJUDB}/kaiju_db_nr_euk.fmi -z 10 -a greedy -m 1 -v
+qrsh -cwd -now n -pe thread 10 -l mem_total=58G -V ${KAIJUDIR}/kaiju -i ${OUTPUT_DECONT}.fasta -o ${OUTPUT_KAIJU} -t ${KAIJUDB}/nodes.dmp -f ${KAIJUDB}/kaiju_db_nr_euk.fmi -z 10 -a greedy -m 7 -e 1 -s 65 -v
 echo
  
 echo "... Step 4.2 : Get labels ..." ;
